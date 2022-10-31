@@ -1,0 +1,33 @@
+GET https://d2runewizard.com/api/terror-zone
+
+{
+    token: String;
+}
+
+{
+    terrorZone: {
+        lastReportedBy: {
+            displayName: String;
+            uid: String;
+        };
+        lastUpdate: {
+            seconds: number;
+            nanoseconds: number;
+        };
+        reportedZones: {
+            [zone: string]: number;
+        };
+        highestProbabilityZone: {
+            zone: String;
+            act: String;
+            amount: number;
+            probability: number;
+        };
+        providedBy: "https://d2runewizard.com/terror-zone-tracker"
+    };
+}
+
+CACHE TTL min: 30s
+if highestProbabilityZone.amount > 0: 60s
+if highestProbabilityZone.amount > 3: highestProbabilityZone.amount * 60s
+CACHE TTL max: T next zone - T // e.g. at 12:43, TTL is max 17 minutes
